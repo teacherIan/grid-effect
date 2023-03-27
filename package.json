@@ -12,6 +12,7 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
-    "animejs": "^3.2.1"
+    "animejs": "^3.2.1",
+    "firebase": "^9.18.0"
   }
 }

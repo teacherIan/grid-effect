@@ -5,50 +5,63 @@ const colors = ['#c11c22', '#e46725', '#000000', '#1271b5'];
 let count = 0;
 let tiles;
 let toggled = false;
-let tileSize = 30;
+let tileSize = 50;
 let rows = Math.floor(document.body.clientWidth / tileSize);
 let columns = Math.floor(document.body.clientHeight / tileSize);
 const text = document.getElementById('text');
+let sapphire = 0;
+let ruby = 0;
+let amber = 0;
+let pearl = 0;
+let previousColor = 0;
 
 const handleScreen = () => {
   toggled = !toggled;
   let index = Math.floor(Math.random() * (rows * columns));
   count++;
-  // document.body.style.backgroundColor = colors[count % (colors.length - 1)];
 
-  let currentHouse = [count % (colors.length - 1)];
+  if (count == 5) {
+    count = 0;
+  }
+  let currentHouse = count;
 
   if (toggled) {
     setTimeout(() => {
       console.log('From timeout');
-      text.style.color = colors[count % (colors.length - 1)];
+      text.style.color = colors[count];
 
       if (currentHouse == 0) {
-        text.innerHTML = 'RUBY \n 0';
+        text.innerHTML = 'RUBY \n ' + ruby;
       }
       if (currentHouse == 1) {
-        text.innerHTML = 'AMBER \n 0';
+        text.innerHTML = 'AMBER \n ' + amber;
       }
       if (currentHouse == 2) {
-        text.innerHTML = 'PEARL \n 0';
+        text.innerHTML = 'PEARL \n ' + pearl;
       }
       if (currentHouse == 3) {
-        text.innerHTML = 'SAPPHIRE \n 0';
+        text.innerHTML = 'SAPPHIRE \n ' + sapphire;
       }
-    }, 200);
+    }, 150);
+  }
+
+  let nextColor = count + 1;
+  if (nextColor == 4) {
+    nextColor = 0;
   }
 
   anime({
     targets: ['.tile'],
-    backgroundColor: colors[(count + 1) % (colors.length - 1)],
+    backgroundColor: colors[nextColor],
     opacity: toggled ? 0 : 1,
-    // color: colors[(count + 1) % (colors.length - 1)],
 
-    delay: anime.stagger(25, {
+    delay: anime.stagger(30, {
       grid: [columns, rows],
       from: index,
     }),
   });
+
+  previousColor = count;
 };
 
 handleScreen();
@@ -105,3 +118,39 @@ const createGrid = () => {
 createGrid();
 
 window.onresize = () => createGrid();
+
+//get db data every 5 minutes
+
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from './firebase.js';
+
+const getData = async () => {
+  console.log('Query Data');
+  const querySnapshot = await getDocs(collection(db, 'points'));
+  querySnapshot.forEach((doc) => {
+    console.log(`${doc.id} => ${doc.data()}`);
+    if (doc.data().house == 'Sapphire') {
+      sapphire += parseInt(doc.data().points);
+      console.log(sapphire + 'Sapphire');
+    }
+    if (doc.data().house == 'Ruby') {
+      ruby += parseInt(doc.data().points);
+      console.log(ruby + 'Ruby');
+    }
+    if (doc.data().house == 'Amber') {
+      amber += parseInt(doc.data().points);
+      console.log(amber + 'Amber');
+    }
+    if (doc.data().house == 'Pearl') {
+      pearl += parseInt(doc.data().points);
+      console.log(pearl + 'Pearl');
+    }
+  });
+};
+
+getData();
+
+setInterval(() => {
+  getData();
+  console.log('Queried db');
+}, 600000);
