@@ -131,12 +131,18 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase.js';
 
 const getData = async () => {
+  let started = false;
+
   const querySnapshot = await getDocs(collection(db, 'points'));
   querySnapshot.forEach((doc) => {
-    sapphire = 0;
-    ruby = 0;
-    amber = 0;
-    pearl = 0;
+    if (!started) {
+      started = true;
+      sapphire = 0;
+      ruby = 0;
+      amber = 0;
+      pearl = 0;
+    }
+
     if (doc.data().house == 'Sapphire') {
       sapphire += parseInt(doc.data().points);
     }
