@@ -19,11 +19,14 @@ let previousColor = 0;
 const handleScreen = () => {
   toggled = !toggled;
   let index = Math.floor(Math.random() * (rows * columns));
-  count++;
 
-  if (count == 5) {
-    count = 0;
+  if (toggled) {
+    count++;
+    if (count == 4) {
+      count = 0;
+    }
   }
+
   let currentHouse = count;
 
   console.log(count + 'count');
@@ -33,19 +36,19 @@ const handleScreen = () => {
       textTop.style.color = colors[count];
       textBottom.style.color = colors[count];
 
-      if (currentHouse == 0) {
+      if (currentHouse === 0) {
         textTop.innerHTML = 'RUBY';
         textBottom.innerHTML = ruby;
       }
-      if (currentHouse == 1) {
+      if (currentHouse === 1) {
         textTop.innerHTML = 'AMBER';
         textBottom.innerHTML = amber;
       }
-      if (currentHouse == 2) {
+      if (currentHouse === 2) {
         textTop.innerHTML = 'PEARL';
         textBottom.innerHTML = pearl;
       }
-      if (currentHouse == 3) {
+      if (currentHouse === 3) {
         textTop.innerHTML = 'SAPPHIRE';
         textBottom.innerHTML = sapphire;
       }
@@ -53,7 +56,7 @@ const handleScreen = () => {
   }
 
   let nextColor = count + 1;
-  if (nextColor == 5) {
+  if (nextColor == 4) {
     nextColor = 0;
   }
 
@@ -69,7 +72,7 @@ const handleScreen = () => {
     }),
   });
 
-  previousColor = nextColor;
+  // previousColor = nextColor;
 };
 
 handleScreen();
