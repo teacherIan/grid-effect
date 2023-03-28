@@ -8,7 +8,8 @@ let toggled = false;
 let tileSize = 50;
 let rows = Math.floor(document.body.clientWidth / tileSize);
 let columns = Math.floor(document.body.clientHeight / tileSize);
-const text = document.getElementById('text');
+const textTop = document.getElementById('text-top');
+const textBottom = document.getElementById('text-bottom');
 let sapphire = 0;
 let ruby = 0;
 let amber = 0;
@@ -25,31 +26,38 @@ const handleScreen = () => {
   }
   let currentHouse = count;
 
+  console.log(count + 'count');
+
   if (toggled) {
     setTimeout(() => {
-      console.log('From timeout');
-      text.style.color = colors[count];
+      textTop.style.color = colors[count];
+      textBottom.style.color = colors[count];
 
       if (currentHouse == 0) {
-        text.innerHTML = 'RUBY \n ' + ruby;
+        textTop.innerHTML = 'RUBY';
+        textBottom.innerHTML = ruby;
       }
       if (currentHouse == 1) {
-        text.innerHTML = 'AMBER \n ' + amber;
+        textTop.innerHTML = 'AMBER';
+        textBottom.innerHTML = amber;
       }
       if (currentHouse == 2) {
-        text.innerHTML = 'PEARL \n ' + pearl;
+        textTop.innerHTML = 'PEARL';
+        textBottom.innerHTML = pearl;
       }
       if (currentHouse == 3) {
-        text.innerHTML = 'SAPPHIRE \n ' + sapphire;
+        textTop.innerHTML = 'SAPPHIRE';
+        textBottom.innerHTML = sapphire;
       }
     }, 150);
   }
 
   let nextColor = count + 1;
-  if (nextColor == 4) {
+  if (nextColor == 5) {
     nextColor = 0;
   }
 
+  console.log(nextColor + 'nextColor');
   anime({
     targets: ['.tile'],
     backgroundColor: colors[nextColor],
@@ -61,7 +69,7 @@ const handleScreen = () => {
     }),
   });
 
-  previousColor = count;
+  previousColor = nextColor;
 };
 
 handleScreen();
@@ -111,8 +119,6 @@ const createGrid = () => {
   createTiles(rows * columns);
 
   tiles = document.querySelectorAll('.tile');
-
-  console.log(tiles[30]);
 };
 
 createGrid();
@@ -125,25 +131,19 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase.js';
 
 const getData = async () => {
-  console.log('Query Data');
   const querySnapshot = await getDocs(collection(db, 'points'));
   querySnapshot.forEach((doc) => {
-    console.log(`${doc.id} => ${doc.data()}`);
     if (doc.data().house == 'Sapphire') {
       sapphire += parseInt(doc.data().points);
-      console.log(sapphire + 'Sapphire');
     }
     if (doc.data().house == 'Ruby') {
       ruby += parseInt(doc.data().points);
-      console.log(ruby + 'Ruby');
     }
     if (doc.data().house == 'Amber') {
       amber += parseInt(doc.data().points);
-      console.log(amber + 'Amber');
     }
     if (doc.data().house == 'Pearl') {
       pearl += parseInt(doc.data().points);
-      console.log(pearl + 'Pearl');
     }
   });
 };
@@ -152,5 +152,4 @@ getData();
 
 setInterval(() => {
   getData();
-  console.log('Queried db');
-}, 600000);
+}, 100000);
